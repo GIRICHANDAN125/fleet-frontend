@@ -1,66 +1,3 @@
-// import { useState, useContext } from "react";
-// import { useNavigate } from "react-router-dom";
-// import axios from "../api/axios";
-// import { AuthContext } from "../context/AuthContext";
-
-// export default function LoginPage() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const [error, setError] = useState("");
-
-//   const navigate = useNavigate();
-//   const { login } = useContext(AuthContext);
-
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     setError("");
-
-//     try {
-//       const res = await axios.post("/auth/login", {
-//         email,
-//         password,
-//       });
-
-//       console.log("LOGIN RESPONSE:", res.data);
-
-//       // 🔥 THIS IS THE KEY FIX
-//       login({
-//         user: res.data.admin,
-//         token: res.data.token,
-//       });
-
-//       navigate("/");
-//     } catch (err) {
-//       console.error(err.response?.data || err.message);
-//       setError("Login failed");
-//     }
-//   };
-
-//   return (
-//     <form onSubmit={handleSubmit}>
-//       <h2>Admin Login</h2>
-
-//       {error && <p style={{ color: "red" }}>{error}</p>}
-
-//       <input
-//         type="email"
-//         value={email}
-//         onChange={(e) => setEmail(e.target.value)}
-//         placeholder="Email"
-//       />
-
-//       <input
-//         type="password"
-//         value={password}
-//         onChange={(e) => setPassword(e.target.value)}
-//         placeholder="Password"
-//       />
-
-//       <button type="submit">Login</button>
-//     </form>
-//   );
-// }
-
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/axios";
@@ -70,6 +7,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
@@ -77,6 +15,7 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     try {
       const res = await axios.post("/auth/login", {
@@ -84,6 +23,7 @@ export default function LoginPage() {
         password,
       });
 
+      // ✅ SUCCESS
       login({
         user: res.data.admin,
         token: res.data.token,
@@ -91,7 +31,15 @@ export default function LoginPage() {
 
       navigate("/");
     } catch (err) {
-      setError("Invalid email or password");
+      // ✅ SHOW REAL ERROR
+      if (err.response) {
+        setError(err.response.data?.message || "Login failed");
+      } else {
+        setError("Cannot connect to server");
+      }
+      console.error("Login error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -139,9 +87,10 @@ export default function LoginPage() {
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+          disabled={loading}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition disabled:opacity-50"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>
