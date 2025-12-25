@@ -6,6 +6,9 @@ import MaintenanceAlerts from "../components/dashboard/MaintenanceAlerts";
 import TripHistory from "../components/dashboard/TripHistory";
 import ReportsPanel from "../components/dashboard/ReportsPanel";
 
+/* =========================
+   Dashboard Page
+   ========================= */
 const DashboardPage = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-6">

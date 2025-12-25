@@ -4,7 +4,6 @@ import axios from "../api/axios";
 /* =========================
    Constants
    ========================= */
-
 const MAINTENANCE_ISSUES = [
   "Oil Change",
   "Service Due",
@@ -18,7 +17,6 @@ const DELAY_TIMES = ["15 mins", "30 mins", "1 hour", "2 hours"];
 /* =========================
    Vehicles Page
    ========================= */
-
 export default function VehiclesPage() {
   const [vehicles, setVehicles] = useState([]);
   const [drivers, setDrivers] = useState([]);
@@ -41,9 +39,8 @@ export default function VehiclesPage() {
   });
 
   /* =========================
-     Fetch data
+     Fetch Data
      ========================= */
-
   useEffect(() => {
     fetchVehicles();
     fetchDrivers();
@@ -60,9 +57,8 @@ export default function VehiclesPage() {
   };
 
   /* =========================
-     Form handlers
+     Form Handlers
      ========================= */
-
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -88,7 +84,6 @@ export default function VehiclesPage() {
   /* =========================
      Maintenance & Delay
      ========================= */
-
   const confirmMaintenance = async (v) => {
     if (!maintenanceUI.issue) {
       alert("Select maintenance issue");
@@ -114,12 +109,12 @@ export default function VehiclesPage() {
     });
 
     setDelayUI({ vehicleId: null, time: "" });
+    fetchVehicles();
   };
 
   /* =========================
      UI
      ========================= */
-
   return (
     <div className="space-y-6">
       <h1 className="text-xl font-semibold">Vehicles</h1>
@@ -192,10 +187,7 @@ export default function VehiclesPage() {
 
           <tbody>
             {vehicles.map((v) => (
-              <tr
-                key={v._id}
-                className="border-t hover:bg-slate-50"
-              >
+              <tr key={v._id} className="border-t hover:bg-slate-50">
                 <td className="px-4 py-3">{v.vehicleNumber}</td>
                 <td className="px-4 py-3">{v.type}</td>
                 <td className="px-4 py-3">
@@ -209,6 +201,8 @@ export default function VehiclesPage() {
                         ? "bg-yellow-100 text-yellow-700"
                         : v.status === "On Trip"
                         ? "bg-green-100 text-green-700"
+                        : v.status === "Delayed"
+                        ? "bg-red-100 text-red-700"
                         : "bg-gray-100 text-gray-700"
                     }`}
                   >
@@ -216,7 +210,6 @@ export default function VehiclesPage() {
                   </span>
                 </td>
 
-                {/* ACTIONS */}
                 <td className="px-4 py-3 space-y-2">
                   <button
                     onClick={() =>
@@ -236,7 +229,6 @@ export default function VehiclesPage() {
                     Delay
                   </button>
 
-                  {/* MAINTENANCE UI */}
                   {maintenanceUI.vehicleId === v._id && (
                     <div className="mt-2 space-y-1">
                       <select
@@ -264,7 +256,6 @@ export default function VehiclesPage() {
                     </div>
                   )}
 
-                  {/* DELAY UI */}
                   {delayUI.vehicleId === v._id && (
                     <div className="mt-2 space-y-1">
                       <select
